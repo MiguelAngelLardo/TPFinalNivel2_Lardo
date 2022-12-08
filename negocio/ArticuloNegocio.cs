@@ -24,7 +24,7 @@ namespace negocio
             {
                 conexion.ConnectionString = "server=.\\SQLEXPRESS; database=CATALOGO_DB; integrated security=true";
                 comando.CommandType = System.Data.CommandType.Text;
-                comando.CommandText = "select Codigo, Nombre, Descripcion From ARTICULOS";
+                comando.CommandText = "select Codigo, Nombre, A.Descripcion, ImagenUrl, C.Descripcion Tipo from ARTICULOS A, CATEGORIAS C where C.ID = A.IdCategoria";
                 comando.Connection = conexion;
 
                 conexion.Open();
@@ -33,9 +33,12 @@ namespace negocio
                 while (lector.Read())
                 {
                     Articulo aux = new Articulo();
-                    aux.Codigo = (int)lector["Codigo"];
+                    aux.Codigo = (string)lector["Codigo"];
                     aux.Nombre = (string)lector["Nombre"];
-                    aux.Descripcion = (string)lector["Descripcion"]; 
+                    aux.Descripcion = (string)lector["Descripcion"];
+                    aux.ImagenUrl = (string)lector["ImagenUrl"];
+                    aux.Tipo = new Categoria(); 
+                    aux.Tipo.Descripcion = (string)lector["Tipo"]; 
 
                     lista.Add(aux);
                 }
