@@ -47,7 +47,7 @@ namespace negocio
 
                     aux.Marca = new Marca();
                     aux.Marca.Id = (int)lector["IdMarca"];
-                    aux.Marca.DescripcionMarca = (string)lector["Marca"];
+                    aux.Marca.descripcionMarca = (string)lector["Marca"];
 
                     if (!(lector["Precio"] is DBNull))
                         aux.Precio = Math.Round((Decimal)lector["Precio"], 2);
@@ -102,7 +102,7 @@ namespace negocio
             {
                 datos.setearConsulta("update ARTICULOS set Codigo = @cod, Nombre = @nomb, Descripcion = @desc, IdMarca = @idMar, IdCategoria = @idCat, ImagenUrl = @image, Precio = @pre where Id = @id");
                 //8 parametros a agregar
-                datos.setearParametro("@cod", arti.Id);
+                datos.setearParametro("@cod", arti.Codigo);
                 datos.setearParametro("@nomb", arti.Nombre);
                 datos.setearParametro("@desc", arti.Descripcion);
                 datos.setearParametro("@idMar", arti.Marca.Id);
@@ -126,6 +126,23 @@ namespace negocio
 
         }
 
+        public void eliminar(int id)
+
+    {
+        try
+        {
+            AccesoDatos datos = new AccesoDatos();
+            datos.setearConsulta("delete from articulos where id =@id");
+            datos.setearParametro("@id", id);
+            datos.ejecutarAccion();
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+
+
+    }
 
         public List<Articulo> filtrar(string campo, string criterio, string filtro)
         {
@@ -149,7 +166,7 @@ namespace negocio
                          break;
                  }
               }
-              else if (campo == "Descripcion")
+              else if (campo == "Descripción")
               {
                   switch (criterio)
                   {
@@ -201,7 +218,7 @@ namespace negocio
 
                 aux.Marca = new Marca();
                 aux.Marca.Id = (int)datos.Lector["IdMarca"];
-                aux.Marca.DescripcionMarca = (string)datos.Lector["Marca"];
+                aux.Marca.descripcionMarca = (string)datos.Lector["Marca"];
 
                 if (!(datos.Lector["Precio"] is DBNull))
                     aux.Precio = Math.Round((Decimal)datos.Lector["Precio"], 2);
@@ -231,23 +248,8 @@ namespace negocio
 
 
 
-    public void eliminar(int id)
-
-    {
-        try
-        {
-            AccesoDatos datos = new AccesoDatos();
-            datos.setearConsulta("delete from articulos where id =@id");
-            datos.setearParametro("@id", id);
-            datos.ejecutarAccion();
-        }
-        catch (Exception ex)
-        {
-            throw ex;
-        }
 
 
-    }
 
 
 

@@ -5,13 +5,18 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Security;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Linq;
 using dominio;
 using negocio;
 using Presentacion;
+
 
 namespace presentacion
 {
@@ -27,7 +32,7 @@ namespace presentacion
         private void Form1_Load(object sender, EventArgs e)
         {
             cargar();
-            
+
             cboCampo.Items.Add("Nombre");
             cboCampo.Items.Add("Descripción");
             cboCampo.Items.Add("Marca");
@@ -60,14 +65,14 @@ namespace presentacion
         {
             if (dgvArticulo.CurrentRow != null)
             {
-            Articulo seleccionado = (Articulo)dgvArticulo.CurrentRow.DataBoundItem; 
-            cargarImagen(seleccionado.ImagenUrl);
+                Articulo seleccionado = (Articulo)dgvArticulo.CurrentRow.DataBoundItem;
+                cargarImagen(seleccionado.ImagenUrl);
             }
         }
 
         private void cargarImagen(string imagen)
         {
-           
+
             try
             {
                 pbxArticulo.Load(imagen);
@@ -94,28 +99,31 @@ namespace presentacion
 
             frmAgregarModificar modificar = new frmAgregarModificar(seleccionado);
             modificar.ShowDialog();
-            cargar(); 
+            cargar();
+           
         }
+
+       
 
         private void btnEliminarfisico_Click(object sender, EventArgs e)
         {
             ArticuloNegocio negoc = new ArticuloNegocio();
             Articulo seleccionado;
             try
-            {    
-                DialogResult respuesta = MessageBox.Show("¿De verdad querés eliminarlo?", "Eliminando",MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                if ( respuesta ==DialogResult.Yes) //el "si"se guarda en variable respuesta. si es SI entra en IF. 
+            {
+                DialogResult respuesta = MessageBox.Show("¿De verdad querés eliminarlo?", "Eliminando", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (respuesta == DialogResult.Yes) //el "si"se guarda en variable respuesta. si es SI entra en IF. 
                 {
-                seleccionado = (Articulo)dgvArticulo.CurrentRow.DataBoundItem;
-                negoc.eliminar(seleccionado.Id);
-                cargar();
+                    seleccionado = (Articulo)dgvArticulo.CurrentRow.DataBoundItem;
+                    negoc.eliminar(seleccionado.Id);
+                    cargar();
 
                 }
 
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-            MessageBox.Show(ex.ToString());                
+                MessageBox.Show(ex.ToString());
             }
         }
 
@@ -124,32 +132,35 @@ namespace presentacion
             ArticuloNegocio neg = new ArticuloNegocio();
             try
             {
-              string campo = cboCampo.SelectedItem.ToString();
-              string criterio = cboCriterio.SelectedItem.ToString();
-              string filtro = txtFiltroAvanzado.Text;
-               dgvArticulo.DataSource = neg.filtrar(campo, criterio, filtro);
+                if (validarFiltro())
+                    return;//este return cancela la ejecucion de este evento
+
+                string campo = cboCampo.SelectedItem.ToString();
+                string criterio = cboCriterio.SelectedItem.ToString();
+                string filtro = txtFiltroAvanzado.Text;
+                dgvArticulo.DataSource = neg.filtrar(campo, criterio, filtro);
 
 
             }
             catch (Exception ex)
             {
-               MessageBox.Show(ex.ToString());                
+                MessageBox.Show(ex.ToString());
             }
-            
+
 
         }
 
         private void txtFiltro_KeyPress(object sender, KeyPressEventArgs e)
         {
-            
+
         }
 
         private void txtFiltro_TextChanged(object sender, EventArgs e)
         {
             List<Articulo> listaFiltrada;
-            string filtro = txtFiltro.Text;
+            string filtro = txtFiltroRapido.Text;
 
-            if (filtro.Length >=2 )
+            if (filtro.Length >= 2)
             {
                 listaFiltrada = listaArticulo.FindAll(x => x.Codigo.ToUpper().Contains(filtro.ToUpper()) || x.Nombre.ToUpper().Contains(filtro.ToUpper()) || x.Descripcion.ToUpper().Contains(filtro.ToUpper()) || x.Categoria.ToString().ToUpper().Contains(filtro.ToUpper()) || x.Marca.ToString().ToUpper().Contains(filtro.ToUpper()) || x.Precio.ToString().ToUpper().Contains(filtro.ToUpper()));
             }
@@ -166,23 +177,23 @@ namespace presentacion
 
         private void cboCampo_SelectedIndexChanged(object sender, EventArgs e)
         {
-             string opcion = cboCampo.SelectedItem.ToString();
-             if(opcion == "Nombre")
-             {                
-                 cboCriterio.Items.Clear();
-                 cboCriterio.Items.Add("Comienza con");
-                 cboCriterio.Items.Add("Termina con");
-                 cboCriterio.Items.Add("Contiene");
-             }
-             else if(opcion == "Descripciom")
-             {
+            string opcion = cboCampo.SelectedItem.ToString();
+            if (opcion == "Nombre")
+            {
                 cboCriterio.Items.Clear();
                 cboCriterio.Items.Add("Comienza con");
                 cboCriterio.Items.Add("Termina con");
                 cboCriterio.Items.Add("Contiene");
-             }
-             else
-             {
+            }
+            else if (opcion == "Descripciom")
+            {
+                cboCriterio.Items.Clear();
+                cboCriterio.Items.Add("Comienza con");
+                cboCriterio.Items.Add("Termina con");
+                cboCriterio.Items.Add("Contiene");
+            }
+            else
+            {
                 cboCriterio.Items.Clear();
                 cboCriterio.Items.Add("Comienza con");
                 cboCriterio.Items.Add("Termina con");
@@ -194,9 +205,87 @@ namespace presentacion
 
         }
 
-        private void cboCriterio_SelectedIndexChanged(object sender, EventArgs e)
-        {
 
+
+        private void btnFiltroRapido_Click(object sender, EventArgs e)//super filtro
+        {
+            /* List<Articulo> listaFiltrada;
+             Regex regex = new Regex(@"^[0-9]+([\.|\,][0-9]{2})?$");
+
+             string filtro = txtFiltroRapido.Text;
+
+             if (filtro != "")
+             {
+                 listaFiltrada = listaArticulo.FindAll(x => x.Nombre.ToUpper().Contains(filtro.ToUpper()) || x.Descripcion.ToUpper().Contains(filtro.ToUpper()) || x.Categoria.Descripcion.ToUpper().Contains(filtro.ToUpper()) || x.Marca.descripcionMarca.ToUpper().Contains(filtro.ToUpper())); //|| x.Precio.ToString().Contains(filtro));
+
+             }                      
+             else
+             {
+                 listaFiltrada = listaArticulo;
+             }*/
+
+            List<Articulo> listaFiltrada;
+            //Regex regex = new Regex(@"^[0-9]+([\.|\,][0-9]{2})?$");
+            Regex regex = new Regex(@"^[0-9]+([\.|\,])?([0-9]{2})?$");
+            string filtro = txtFiltroRapido.Text;
+
+            /*if (!string.IsNullOrEmpty(filtro) && regex.IsMatch(filtro)) && decimal.TryParse(filtro, out decimal precioFiltro))
+            {
+                string precioFiltro = filtro;
+                //string filtroSinCaracteresNoDeseados = filtro.Replace(",", ".");
+                listaFiltrada = listaArticulo.FindAll(x => x.Precio >= precioFiltro - 0.01m && x.Precio <= precioFiltro + 0.01m);
+            }*/
+
+            bool IsSubset(string input, string value)
+            {
+                var inputChars = input.ToCharArray();
+                var valueChars = value.ToCharArray();
+
+                int valueIndex = 0;
+                for (int i = 0; i < inputChars.Length; i++)
+                {
+                    if (inputChars[i] == valueChars[valueIndex])
+                    {
+                        valueIndex++;
+                    }
+                }
+                return valueIndex == valueChars.Length;
+            }
+
+            if (!string.IsNullOrEmpty(filtro))
+            {
+                listaFiltrada = listaArticulo.FindAll(x => IsSubset(filtro, x.Precio.ToString()));
+            }
+            else
+            {
+                listaFiltrada = listaArticulo;
+            }
+
+
+
+
+
+            dgvArticulo.DataSource = null;
+            dgvArticulo.DataSource = listaFiltrada;
+            ocultarColumnas();
         }
+
+
+        private bool validarFiltro()
+        {
+            if (cboCampo.SelectedIndex < 0)
+            {
+                MessageBox.Show("Por favor, seleccione el campo para filtrar.");
+                return true;
+            }
+            if (cboCriterio.SelectedIndex < 0)
+            {
+                MessageBox.Show("Por favor, seleccione el criterio para filtrar.");
+                return true;
+            }
+            return false;
+
+        } // Validacion para campo y criterio       
+
     }
 }

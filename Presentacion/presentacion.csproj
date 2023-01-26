@@ -34,6 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -74,6 +75,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -97,6 +99,27 @@
       <Project>{5a40fdba-44e8-4c32-8624-6e05b833d53f}</Project>
       <Name>negocio</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\boton-agregar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\mejoramiento.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\basura.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\colors.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\full-moon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\lupa.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\trueno.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

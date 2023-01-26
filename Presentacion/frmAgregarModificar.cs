@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using dominio;
 using negocio;
+using System.Configuration;
 
 namespace Presentacion
 {
@@ -16,22 +18,18 @@ namespace Presentacion
     {
 
         private Articulo articulo = null;
+        private OpenFileDialog archivo = null;
         public frmAgregarModificar()
         {
             InitializeComponent();
-        }
+        } //Esto esto es para Agregar
 
         public frmAgregarModificar(Articulo articulo)
         {
             InitializeComponent();
             this.articulo = articulo;
             Text = "Modificar Articulo";
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
+        }// Este es para Modificar
 
         private void btnCancelar_Click(object sender, EventArgs e)
         {
@@ -40,12 +38,12 @@ namespace Presentacion
 
         private void btnAceptar_Click(object sender, EventArgs e)
         {
-            //Articulo art = new Articulo(); esto habbria q borrarlo
+            
             ArticuloNegocio negocio = new ArticuloNegocio();
 
-            articulo.Categoria = (Categoria)cboCategoria.SelectedItem;
-            articulo.Marca = (Marca)cboMarca.SelectedItem;
-            articulo.ImagenUrl = txtUrlImagen.Text;
+           // articulo.Categoria = (Categoria)cboCategoria.SelectedItem;
+            //articulo.Marca = (Marca)cboMarca.SelectedItem;
+            //articulo.ImagenUrl = txtUrlImagen.Text;
 
             try
             {
@@ -58,7 +56,7 @@ namespace Presentacion
                 articulo.ImagenUrl = txtUrlImagen.Text;
                 articulo.Marca = (Marca)cboMarca.SelectedItem;
                 articulo.Categoria = (Categoria)cboCategoria.SelectedItem;
-                articulo.Precio = int.Parse(txtPrecio.Text);
+                articulo.Precio = Decimal.Parse(txtPrecio.Text);
 
                 if (articulo.Id != 0)//Si es distinto de cero asumimos que ya existe en la base de datos, por lo tanto llamamos al metodo "modificar".
                                      //Caso contrario, llamamos al metodo "crear", porque no existe
@@ -72,7 +70,9 @@ namespace Presentacion
                     MessageBox.Show("Agregado exitosamente");
                 }
 
-
+                //Guardo imagen si la levanto localmente:
+                if(archivo != null && !(txtUrlImagen.Text.ToUpper().Contains("HTTP")))   
+                 File.Copy(archivo.FileName, ConfigurationManager.AppSettings["images-folfer"] + archivo.SafeFileName);
 
                 Close();
 
@@ -85,22 +85,21 @@ namespace Presentacion
             }
         }
 
-        private void label1_Click_1(object sender, EventArgs e)
-        {
-
-        }
-
         private void frmAgregarModificar_Load(object sender, EventArgs e)
         {
-            ArticuloNegocio articuloNegocio = new ArticuloNegocio();
+            MarcaNegocio marcaNegocio = new MarcaNegocio();
+            CategoriaNegocio categoriaNegocio = new CategoriaNegocio();
             try
             {
-                cboMarca.DataSource = articuloNegocio.listar();
-                cboMarca.ValueMember = "Id";
-                cboMarca.DisplayMember = "Descripcion";
-                cboCategoria.DataSource = articuloNegocio.listar();
+                cboMarca.DataSource = marcaNegocio.listar();
+                cboCategoria.DataSource = categoriaNegocio.listar();
                 cboCategoria.ValueMember = "Id";
                 cboCategoria.DisplayMember = "Descripcion";
+                cboMarca.ValueMember = "Id";
+                cboMarca.DisplayMember = "descripcionMarca";
+
+
+
 
                 if (articulo != null)
                 {
@@ -109,12 +108,10 @@ namespace Presentacion
                     txtDescripcion.Text = articulo.Descripcion;
                     txtUrlImagen.Text = articulo.ImagenUrl;
                     cargarImagen(articulo.ImagenUrl);
-                    cboMarca.SelectedValue = articulo.Marca.Id;
+                    cboMarca.SelectedValue = articulo.Marca.ToString();
+                    cboMarca.SelectedValue = articulo.Marca.Id; 
                     cboCategoria.SelectedValue = articulo.Categoria.Id;
-
-
-
-
+                    txtPrecio.Text = articulo.Precio.ToString();
                 }
             }
             catch (Exception ex)
@@ -141,5 +138,41 @@ namespace Presentacion
                 pbxArticuloAgregar.Load("https://www.ncenet.com/wp-content/uploads/2020/04/No-image-found.jpg");
             }
         }
+
+        private void btnAgregarImagen_Click(object sender, EventArgs e)
+        {
+            archivo = new OpenFileDialog();
+            archivo.Filter = "jpg|*.jpg; |png|*.png";
+            archivo.ShowDialog();
+            if (archivo.ShowDialog() == DialogResult.OK)
+            {
+              txtUrlImagen.Text = archivo.FileName;
+              cargarImagen(archivo.FileName);
+
+
+
+            }
+        }
+
+        private void cboMarca_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtCodigo_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+
     }
 }

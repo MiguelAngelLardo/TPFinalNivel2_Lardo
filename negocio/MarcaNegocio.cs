@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace negocio
 {
-    /*internal class MarcaNegocio
+    public class MarcaNegocio
     {
         public List<Marca> listar()
         {
@@ -23,7 +23,7 @@ namespace negocio
                 {
                     Marca aux = new Marca();
                     aux.Id = (int)datos.Lector["Id"];
-                    aux.Descripcion = (string)datos.Lector["Descripcion"];
+                    aux.descripcionMarca = (string)datos.Lector["Descripcion"];
 
                     lista.Add(aux);
                 }
@@ -43,5 +43,5 @@ namespace negocio
 
         }
 
-    }*/
+    }
 }
