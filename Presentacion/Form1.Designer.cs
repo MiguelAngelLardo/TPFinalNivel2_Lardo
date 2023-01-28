@@ -71,7 +71,6 @@
             this.txtFiltroRapido.Size = new System.Drawing.Size(310, 26);
             this.txtFiltroRapido.TabIndex = 7;
             this.txtFiltroRapido.TextChanged += new System.EventHandler(this.txtFiltro_TextChanged);
-            this.txtFiltroRapido.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtFiltro_KeyPress);
             // 
             // lblCampo
             // 

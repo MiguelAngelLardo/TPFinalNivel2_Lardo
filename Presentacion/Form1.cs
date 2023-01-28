@@ -94,38 +94,89 @@ namespace presentacion
 
         private void btnModificar_Click(object sender, EventArgs e)
         {
+            
+            
+            /*switch (dgvArticulo.SelectedRows.Count)
+            {
+                case 0:
+                  btnModificar.Enabled = false;
+                  MessageBox.Show("No puedes MODIFICAR algo que no SELECCIONASTE. Gracias.");
+                  break;
+
+                 case 1:
+                   btnModificar.Enabled = true;
+                   Articulo seleccionado;
+                   seleccionado = (Articulo)dgvArticulo.CurrentRow.DataBoundItem;
+                   frmAgregarModificar modificar = new frmAgregarModificar(seleccionado);
+                   modificar.ShowDialog();
+                   cargar();
+                   break;
+
+            }*/
+
+
+
+           
+
+            if (!dgvArticulo.SelectedRows.Count.Equals(0))
+            {
+                
+            btnModificar.Enabled = true;
             Articulo seleccionado;
             seleccionado = (Articulo)dgvArticulo.CurrentRow.DataBoundItem;
 
             frmAgregarModificar modificar = new frmAgregarModificar(seleccionado);
             modificar.ShowDialog();
-            cargar();
-           
+            cargar();     
+            }
+            else
+                 //if (dgvArticulo.SelectedRows.Count == 0)
+            {
+                btnModificar.Enabled = false;
+                MessageBox.Show("No puedes MODIFICAR algo que no SELECCIONASTE. Gracias.");
+            }
+
+
         }
-
        
+        
 
-        private void btnEliminarfisico_Click(object sender, EventArgs e)
+
+
+
+    private void btnEliminarfisico_Click(object sender, EventArgs e)
         {
             ArticuloNegocio negoc = new ArticuloNegocio();
             Articulo seleccionado;
-            try
+
+            if (dgvArticulo.SelectedRows.Count == 0)
             {
-                DialogResult respuesta = MessageBox.Show("¿De verdad querés eliminarlo?", "Eliminando", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                if (respuesta == DialogResult.Yes) //el "si"se guarda en variable respuesta. si es SI entra en IF. 
+                btnEliminarfisico.Enabled = false;
+                MessageBox.Show("No puedes ELIMINAR algo que no SELECCIONASTE. Gracias.");
+            }
+            else
+            {
+                btnEliminarfisico.Enabled = true;
+                try
                 {
-                    seleccionado = (Articulo)dgvArticulo.CurrentRow.DataBoundItem;
-                    negoc.eliminar(seleccionado.Id);
-                    cargar();
+                    DialogResult respuesta = MessageBox.Show("¿De verdad querés eliminarlo?", "Eliminando", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    if (respuesta == DialogResult.Yes) //el "si"se guarda en variable respuesta. si es SI entra en IF. 
+                    {
+                        seleccionado = (Articulo)dgvArticulo.CurrentRow.DataBoundItem;
+                        negoc.eliminar(seleccionado.Id);
+                        cargar();
+                    }
 
                 }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                }
+            }
 
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
+
         }
+
 
         private void btnFiltro_Click(object sender, EventArgs e)
         {
@@ -150,10 +201,7 @@ namespace presentacion
 
         }
 
-        private void txtFiltro_KeyPress(object sender, KeyPressEventArgs e)
-        {
-
-        }
+        
 
         private void txtFiltro_TextChanged(object sender, EventArgs e)
         {
@@ -209,69 +257,34 @@ namespace presentacion
 
         private void btnFiltroRapido_Click(object sender, EventArgs e)//super filtro
         {
-            /* List<Articulo> listaFiltrada;
-             Regex regex = new Regex(@"^[0-9]+([\.|\,][0-9]{2})?$");
+             List<Articulo> listaFiltrada;
+             Regex regex = new Regex(@"^[0-9]*([\.|\,]?[0-9]{0,2})?$");
 
-             string filtro = txtFiltroRapido.Text;
+             string filtro = txtFiltroRapido.Text;         
 
-             if (filtro != "")
-             {
-                 listaFiltrada = listaArticulo.FindAll(x => x.Nombre.ToUpper().Contains(filtro.ToUpper()) || x.Descripcion.ToUpper().Contains(filtro.ToUpper()) || x.Categoria.Descripcion.ToUpper().Contains(filtro.ToUpper()) || x.Marca.descripcionMarca.ToUpper().Contains(filtro.ToUpper())); //|| x.Precio.ToString().Contains(filtro));
 
-             }                      
-             else
-             {
-                 listaFiltrada = listaArticulo;
-             }*/
+           if (filtro != "")
+           {
+               listaFiltrada = listaArticulo.FindAll(x => x.Nombre.ToUpper().Contains(filtro.ToUpper()) || x.Descripcion.ToUpper().Contains(filtro.ToUpper()) || x.Categoria.Descripcion.ToUpper().Contains(filtro.ToUpper()) || x.Marca.descripcionMarca.ToUpper().Contains(filtro.ToUpper()) || x.Precio.ToString().Contains(filtro));
 
-            List<Articulo> listaFiltrada;
-            //Regex regex = new Regex(@"^[0-9]+([\.|\,][0-9]{2})?$");
-            Regex regex = new Regex(@"^[0-9]+([\.|\,])?([0-9]{2})?$");
-            string filtro = txtFiltroRapido.Text;
-
-            /*if (!string.IsNullOrEmpty(filtro) && regex.IsMatch(filtro)) && decimal.TryParse(filtro, out decimal precioFiltro))
-            {
-                string precioFiltro = filtro;
-                //string filtroSinCaracteresNoDeseados = filtro.Replace(",", ".");
-                listaFiltrada = listaArticulo.FindAll(x => x.Precio >= precioFiltro - 0.01m && x.Precio <= precioFiltro + 0.01m);
-            }*/
-
-            bool IsSubset(string input, string value)
-            {
-                var inputChars = input.ToCharArray();
-                var valueChars = value.ToCharArray();
-
-                int valueIndex = 0;
-                for (int i = 0; i < inputChars.Length; i++)
-                {
-                    if (inputChars[i] == valueChars[valueIndex])
-                    {
-                        valueIndex++;
-                    }
-                }
-                return valueIndex == valueChars.Length;
-            }
-
-            if (!string.IsNullOrEmpty(filtro))
-            {
-                listaFiltrada = listaArticulo.FindAll(x => IsSubset(filtro, x.Precio.ToString()));
-            }
-            else
-            {
-                listaFiltrada = listaArticulo;
-            }
+           }                      
+           else
+           {
+               listaFiltrada = listaArticulo;
+           }
 
 
 
 
-
-            dgvArticulo.DataSource = null;
+           dgvArticulo.DataSource = null;
             dgvArticulo.DataSource = listaFiltrada;
             ocultarColumnas();
         }
 
 
-        private bool validarFiltro()
+   
+
+         private bool validarFiltro()
         {
             if (cboCampo.SelectedIndex < 0)
             {
@@ -287,5 +300,6 @@ namespace presentacion
 
         } // Validacion para campo y criterio       
 
+        
     }
 }
