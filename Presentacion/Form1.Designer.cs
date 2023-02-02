@@ -55,11 +55,11 @@
             this.dgvArticulo.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dgvArticulo.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvArticulo.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
-            this.dgvArticulo.Location = new System.Drawing.Point(17, 65);
+            this.dgvArticulo.Location = new System.Drawing.Point(17, 76);
             this.dgvArticulo.MultiSelect = false;
             this.dgvArticulo.Name = "dgvArticulo";
             this.dgvArticulo.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvArticulo.Size = new System.Drawing.Size(858, 411);
+            this.dgvArticulo.Size = new System.Drawing.Size(681, 370);
             this.dgvArticulo.TabIndex = 0;
             this.dgvArticulo.SelectionChanged += new System.EventHandler(this.dgvArticulo_SelectionChanged);
             // 
@@ -152,6 +152,8 @@
             // 
             // lblFiltro
             // 
+            this.lblFiltro.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lblFiltro.AutoSize = true;
             this.lblFiltro.Font = new System.Drawing.Font("Maiandra GD", 23F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel, ((byte)(3)));
             this.lblFiltro.Image = global::Presentacion.Properties.Resources.trueno;
@@ -224,10 +226,10 @@
             // pbxArticulo
             // 
             this.pbxArticulo.BackColor = System.Drawing.SystemColors.Menu;
-            this.pbxArticulo.Location = new System.Drawing.Point(753, 65);
+            this.pbxArticulo.Location = new System.Drawing.Point(736, 76);
             this.pbxArticulo.Name = "pbxArticulo";
-            this.pbxArticulo.Size = new System.Drawing.Size(411, 411);
-            this.pbxArticulo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pbxArticulo.Size = new System.Drawing.Size(370, 370);
+            this.pbxArticulo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbxArticulo.TabIndex = 1;
             this.pbxArticulo.TabStop = false;
             // 
@@ -244,6 +246,7 @@
             this.btnFiltroRapido.TabIndex = 18;
             this.btnFiltroRapido.Text = "Súper Busqueda";
             this.btnFiltroRapido.UseVisualStyleBackColor = false;
+            this.btnFiltroRapido.Visible = false;
             this.btnFiltroRapido.Click += new System.EventHandler(this.btnFiltroRapido_Click);
             // 
             // Form1
@@ -251,7 +254,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(1484, 705);
+            this.ClientSize = new System.Drawing.Size(1281, 727);
             this.Controls.Add(this.btnFiltroRapido);
             this.Controls.Add(this.txtFiltroAvanzado);
             this.Controls.Add(this.cboCriterio);
@@ -268,6 +271,9 @@
             this.Controls.Add(this.pbxArticulo);
             this.Controls.Add(this.dgvArticulo);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(1297, 766);
+            this.MinimumSize = new System.Drawing.Size(1297, 766);
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Menú Principal";

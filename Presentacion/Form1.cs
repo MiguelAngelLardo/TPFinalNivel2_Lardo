@@ -84,6 +84,7 @@ namespace presentacion
 
         }
 
+
         private void btnAgregar_Click(object sender, EventArgs e)
         {
             frmAgregarModificar agregar = new frmAgregarModificar();
@@ -91,72 +92,21 @@ namespace presentacion
             cargar();
 
         }
-
-        private void btnModificar_Click(object sender, EventArgs e)
-        {
-            
-            
-            /*switch (dgvArticulo.SelectedRows.Count)
-            {
-                case 0:
-                  btnModificar.Enabled = false;
-                  MessageBox.Show("No puedes MODIFICAR algo que no SELECCIONASTE. Gracias.");
-                  break;
-
-                 case 1:
-                   btnModificar.Enabled = true;
-                   Articulo seleccionado;
-                   seleccionado = (Articulo)dgvArticulo.CurrentRow.DataBoundItem;
-                   frmAgregarModificar modificar = new frmAgregarModificar(seleccionado);
-                   modificar.ShowDialog();
-                   cargar();
-                   break;
-
-            }*/
-
-
-
-           
-
-            if (!dgvArticulo.SelectedRows.Count.Equals(0))
-            {
-                
-            btnModificar.Enabled = true;
-            Articulo seleccionado;
-            seleccionado = (Articulo)dgvArticulo.CurrentRow.DataBoundItem;
-
-            frmAgregarModificar modificar = new frmAgregarModificar(seleccionado);
-            modificar.ShowDialog();
-            cargar();     
-            }
-            else
-                 //if (dgvArticulo.SelectedRows.Count == 0)
-            {
-                btnModificar.Enabled = false;
-                MessageBox.Show("No puedes MODIFICAR algo que no SELECCIONASTE. Gracias.");
-            }
-
-
-        }
        
         
+        private void btnModificar_Click(object sender, EventArgs e)
+        {                        
+           Articulo seleccionado;            
+           seleccionado = (Articulo)dgvArticulo.CurrentRow.DataBoundItem;
+           frmAgregarModificar modificar = new frmAgregarModificar(seleccionado);
+           modificar.ShowDialog();
+           cargar();     
+         }
 
-
-
-
-    private void btnEliminarfisico_Click(object sender, EventArgs e)
+        private void btnEliminarfisico_Click(object sender, EventArgs e)
         {
             ArticuloNegocio negoc = new ArticuloNegocio();
-            Articulo seleccionado;
-
-            if (dgvArticulo.SelectedRows.Count == 0)
-            {
-                btnEliminarfisico.Enabled = false;
-                MessageBox.Show("No puedes ELIMINAR algo que no SELECCIONASTE. Gracias.");
-            }
-            else
-            {
-                btnEliminarfisico.Enabled = true;
+            Articulo seleccionado;        
                 try
                 {
                     DialogResult respuesta = MessageBox.Show("¿De verdad querés eliminarlo?", "Eliminando", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
@@ -166,15 +116,14 @@ namespace presentacion
                         negoc.eliminar(seleccionado.Id);
                         cargar();
                     }
-
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.ToString());
                 }
-            }
 
 
+            
         }
 
 
@@ -191,37 +140,74 @@ namespace presentacion
                 string filtro = txtFiltroAvanzado.Text;
                 dgvArticulo.DataSource = neg.filtrar(campo, criterio, filtro);
 
-
+               bloquearBotones();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
             }
-
-
         }
 
+        private void btnFiltroRapido_Click(object sender, EventArgs e)//super filtro
+
+        {
+            /* List<Articulo> listaFiltrada;
+             Regex regex = new Regex(@"^[0-9]*([\.|\,]?[0-9]{0,2})?$");
+
+             string filtro = txtFiltroRapido.Text;         
+
+
+           if (filtro != "")
+           {
+               listaFiltrada = listaArticulo.FindAll(x => x.Nombre.ToUpper().Contains(filtro.ToUpper()) || x.Descripcion.ToUpper().Contains(filtro.ToUpper()) || x.Categoria.Descripcion.ToUpper().Contains(filtro.ToUpper()) || x.Marca.descripcionMarca.ToUpper().Contains(filtro.ToUpper()) || x.Precio.ToString().Contains(filtro));
+
+           }                      
+           else
+           {
+               listaFiltrada = listaArticulo;
+           }
+
+            dgvArticulo.DataSource = null;
+            dgvArticulo.DataSource = listaFiltrada;
+            bloquearBotones();
+            ocultarColumnas();*/
+        }
         
 
-        private void txtFiltro_TextChanged(object sender, EventArgs e)
+        private void txtFiltro_TextChanged(object sender, EventArgs e)  //txt del super filtro
         {
             List<Articulo> listaFiltrada;
             string filtro = txtFiltroRapido.Text;
 
-            if (filtro.Length >= 2)
+            if (filtro.Length >= 1)
             {
-                listaFiltrada = listaArticulo.FindAll(x => x.Codigo.ToUpper().Contains(filtro.ToUpper()) || x.Nombre.ToUpper().Contains(filtro.ToUpper()) || x.Descripcion.ToUpper().Contains(filtro.ToUpper()) || x.Categoria.ToString().ToUpper().Contains(filtro.ToUpper()) || x.Marca.ToString().ToUpper().Contains(filtro.ToUpper()) || x.Precio.ToString().ToUpper().Contains(filtro.ToUpper()));
+                listaFiltrada = listaArticulo.FindAll(x => x.Nombre.ToUpper().Contains(filtro.ToUpper()) || x.Descripcion.ToUpper().Contains(filtro.ToUpper()) || x.Categoria.Descripcion.ToUpper().Contains(filtro.ToUpper()) || x.Marca.descripcionMarca.ToUpper().Contains(filtro.ToUpper()) || x.Precio.ToString().Contains(filtro));
             }
             else
             {
                 listaFiltrada = listaArticulo;
             }
-
-
             dgvArticulo.DataSource = null;
-            dgvArticulo.DataSource = listaArticulo;
+            dgvArticulo.DataSource = listaFiltrada;
+            
+
+            if(dgvArticulo.SelectedRows.Count > 0)
+            {
+            dgvArticulo.Rows[0].Selected = true;
+            dgvArticulo.CurrentCell = dgvArticulo.Rows[0].Cells[1];
+            btnModificar.Enabled = true;
+            btnEliminarfisico.Enabled = true;
+            }
+            else
+            {
+                MessageBox.Show("No tenemos articulos con esas especificaciones.");
+                btnModificar.Enabled = false;
+                btnEliminarfisico.Enabled = false;
+            }
+
             ocultarColumnas();
         }
+
 
         private void cboCampo_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -253,36 +239,7 @@ namespace presentacion
 
         }
 
-
-
-        private void btnFiltroRapido_Click(object sender, EventArgs e)//super filtro
-        {
-             List<Articulo> listaFiltrada;
-             Regex regex = new Regex(@"^[0-9]*([\.|\,]?[0-9]{0,2})?$");
-
-             string filtro = txtFiltroRapido.Text;         
-
-
-           if (filtro != "")
-           {
-               listaFiltrada = listaArticulo.FindAll(x => x.Nombre.ToUpper().Contains(filtro.ToUpper()) || x.Descripcion.ToUpper().Contains(filtro.ToUpper()) || x.Categoria.Descripcion.ToUpper().Contains(filtro.ToUpper()) || x.Marca.descripcionMarca.ToUpper().Contains(filtro.ToUpper()) || x.Precio.ToString().Contains(filtro));
-
-           }                      
-           else
-           {
-               listaFiltrada = listaArticulo;
-           }
-
-
-
-
-           dgvArticulo.DataSource = null;
-            dgvArticulo.DataSource = listaFiltrada;
-            ocultarColumnas();
-        }
-
-
-   
+          
 
          private bool validarFiltro()
         {
@@ -300,6 +257,20 @@ namespace presentacion
 
         } // Validacion para campo y criterio       
 
-        
+        private void bloquearBotones()
+        {
+            if (dgvArticulo.SelectedRows.Count > 0)
+            {
+                btnModificar.Enabled = true;
+                btnEliminarfisico.Enabled = true;
+            }
+            else
+            { 
+            btnModificar.Enabled = false;
+            btnEliminarfisico.Enabled = false;
+            }
+        }     //Bloquea cuando el DGV esta en cero. 
+
+      
     }
 }

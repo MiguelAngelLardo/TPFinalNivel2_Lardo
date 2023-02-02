@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using dominio;
 using negocio;
 using System.Configuration;
+using System.Text.RegularExpressions;
 
 namespace Presentacion
 {
@@ -56,7 +57,20 @@ namespace Presentacion
                 articulo.ImagenUrl = txtUrlImagen.Text;
                 articulo.Marca = (Marca)cboMarca.SelectedItem;
                 articulo.Categoria = (Categoria)cboCategoria.SelectedItem;
-                articulo.Precio = Decimal.Parse(txtPrecio.Text);
+                //articulo.Precio = Decimal.Parse(txtPrecio.Text);
+
+                decimal precio;
+                if (Decimal.TryParse(txtPrecio.Text, out precio))
+                {
+                    articulo.Precio = precio;
+                    lblSoloPrecio.Visible = false;
+                }
+                else
+                {
+                    lblSoloPrecio.Visible = true;
+                    txtPrecio.Text = "";                    
+                    return;
+                }
 
                 if (articulo.Id != 0)//Si es distinto de cero asumimos que ya existe en la base de datos, por lo tanto llamamos al metodo "modificar".
                                      //Caso contrario, llamamos al metodo "crear", porque no existe
@@ -116,7 +130,6 @@ namespace Presentacion
             }
             catch (Exception ex)
             {
-
                 MessageBox.Show(ex.ToString());
             }
         }
@@ -154,24 +167,11 @@ namespace Presentacion
             }
         }
 
-        private void cboMarca_SelectedIndexChanged(object sender, EventArgs e)
-        {
+       
 
-        }
+        
 
-        private void txtCodigo_TextChanged(object sender, EventArgs e)
-        {
 
-        }
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label1_Click_1(object sender, EventArgs e)
-        {
-
-        }
 
 
     }

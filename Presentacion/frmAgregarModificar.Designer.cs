@@ -46,6 +46,7 @@
             this.lblPrecio = new System.Windows.Forms.Label();
             this.txtPrecio = new System.Windows.Forms.TextBox();
             this.btnAgregarImagen = new System.Windows.Forms.Button();
+            this.lblSoloPrecio = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pbxArticuloAgregar)).BeginInit();
             this.SuspendLayout();
             // 
@@ -58,7 +59,6 @@
             this.lblCodigo.Size = new System.Drawing.Size(66, 19);
             this.lblCodigo.TabIndex = 0;
             this.lblCodigo.Text = "Codigo:";
-            this.lblCodigo.Click += new System.EventHandler(this.label1_Click);
             // 
             // txtCodigo
             // 
@@ -66,7 +66,6 @@
             this.txtCodigo.Name = "txtCodigo";
             this.txtCodigo.Size = new System.Drawing.Size(218, 20);
             this.txtCodigo.TabIndex = 1;
-            this.txtCodigo.TextChanged += new System.EventHandler(this.txtCodigo_TextChanged);
             // 
             // btnAceptar
             // 
@@ -99,7 +98,6 @@
             this.lblNombre.Size = new System.Drawing.Size(74, 19);
             this.lblNombre.TabIndex = 4;
             this.lblNombre.Text = "Nombre:";
-            this.lblNombre.Click += new System.EventHandler(this.label1_Click_1);
             // 
             // txtNombre
             // 
@@ -152,7 +150,6 @@
             this.cboMarca.Name = "cboMarca";
             this.cboMarca.Size = new System.Drawing.Size(220, 21);
             this.cboMarca.TabIndex = 10;
-            this.cboMarca.SelectedIndexChanged += new System.EventHandler(this.cboMarca_SelectedIndexChanged);
             // 
             // cboCategoria
             // 
@@ -220,11 +217,22 @@
             this.btnAgregarImagen.UseVisualStyleBackColor = true;
             this.btnAgregarImagen.Click += new System.EventHandler(this.btnAgregarImagen_Click);
             // 
+            // lblSoloPrecio
+            // 
+            this.lblSoloPrecio.AutoSize = true;
+            this.lblSoloPrecio.Location = new System.Drawing.Point(338, 188);
+            this.lblSoloPrecio.Name = "lblSoloPrecio";
+            this.lblSoloPrecio.Size = new System.Drawing.Size(116, 13);
+            this.lblSoloPrecio.TabIndex = 18;
+            this.lblSoloPrecio.Text = "*Solo Precio por favor. ";
+            this.lblSoloPrecio.Visible = false;
+            // 
             // frmAgregarModificar
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(906, 543);
+            this.Controls.Add(this.lblSoloPrecio);
             this.Controls.Add(this.btnAgregarImagen);
             this.Controls.Add(this.txtPrecio);
             this.Controls.Add(this.lblPrecio);
@@ -243,6 +251,8 @@
             this.Controls.Add(this.btnAceptar);
             this.Controls.Add(this.txtCodigo);
             this.Controls.Add(this.lblCodigo);
+            this.MaximumSize = new System.Drawing.Size(922, 582);
+            this.MinimumSize = new System.Drawing.Size(922, 582);
             this.Name = "frmAgregarModificar";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Agregar Articulo";
@@ -273,5 +283,6 @@
         private System.Windows.Forms.Label lblPrecio;
         private System.Windows.Forms.TextBox txtPrecio;
         private System.Windows.Forms.Button btnAgregarImagen;
+        private System.Windows.Forms.Label lblSoloPrecio;
     }
 }
